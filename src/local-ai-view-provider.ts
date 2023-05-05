@@ -39,11 +39,11 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
     }
   }
 
-  private getHtml(webView: vscode.Webview) {
-    const scriptUri = webView.asWebviewUri(
+  private getHtml(webview: vscode.Webview) {
+    const scriptUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this.context.extensionUri, "media", "main.js")
     );
-    const styleMainUri = webView.asWebviewUri(
+    const stylesMainUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this.context.extensionUri, "media", "main.css")
     );
 
@@ -53,7 +53,7 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
       <head>
         <meta charset="UTF-8">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<link href="${styleMainUri}" rel="stylesheet">
+				<link href="${stylesMainUri}" rel="stylesheet">
 				<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 				<script src="https://cdn.tailwindcss.com"></script>
       </head>
@@ -67,8 +67,8 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
 					placeholder="Ask a question..."
 				></textarea>
         <div class="p-4 w-full flex space-x-4">
-          <button style="background: var(--vscode-button-background)" id="ask-button" class="p-2 w-full ml-5">Ask</button>
-          <button style="background: var(--vscode-button-background)" id="chat-button" class="p-2 w-full ml-3">Clear</button>
+          <button style="background: var(--vscode-button-background)" id="chat-button" class="p-2 w-full ml-5">Ask</button>
+          <button style="background: var(--vscode-button-background)" id="clear-button" class="p-2 w-full ml-3">Clear</button>
         </div>
         <script src="${scriptUri}"></script>
       </body>
