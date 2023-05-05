@@ -9,7 +9,10 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:extension.openMyExtension",
+    "onCommand:extension.useMyExtension"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
@@ -17,7 +20,25 @@
         "command": "localai-vscode-plugin.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "localai-vscode-plugin",
+          "title": "LocalAI",
+          "icon": "images/icon.png"
+        }
+      ]
+    },
+    "views": {
+      "localai-vscode-plugin": [
+        {
+          "type": "webview",
+          "id": "localai-vscode-plugin.view",
+          "name": "LocalAI"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
