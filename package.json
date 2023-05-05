@@ -19,6 +19,10 @@
       {
         "command": "localai-vscode-plugin.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "localai-vscode-plugin.addSelectedText",
+        "title": "Add hilighted text to chat"
       }
     ],
     "viewsContainers": {
