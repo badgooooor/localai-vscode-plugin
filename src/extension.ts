@@ -10,20 +10,6 @@ export function activate(context: vscode.ExtensionContext) {
   const localAI = new LocalAI("http://localhost:8080", "ggml-gpt4all-j");
   const localAiViewProvider = new LocalAIViewProvider(context, localAI);
 
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with registerCommand
-  // The commandId parameter must match the command field in package.json
-  let disposable = vscode.commands.registerCommand(
-    "localai-vscode-plugin.helloWorld",
-    () => {
-      // The code you place here will be executed every time your command is executed
-      // Display a message box to the user
-      vscode.window.showInformationMessage(
-        "Hello World from localai-vscode-plugin!"
-      );
-    }
-  );
-
   let addSelectedTextCommand = vscode.commands.registerCommand(
     "localai-vscode-plugin.addSelectedText",
     async () => {
@@ -44,9 +30,23 @@ export function activate(context: vscode.ExtensionContext) {
       }
     }
   );
+
+  let copyLatestResponseCommand = vscode.commands.registerCommand(
+    "localai-vscode-plugin.copyLatestResponse",
+    () => {
+      if (localAiViewProvider.latestResponse) {
+        vscode.env.clipboard.writeText(localAiViewProvider.latestResponse);
+      } else {
+        vscode.window.showErrorMessage(
+          `You haven't chat with bot. Chat first to copy from clipboard.`
+        );
+      }
+    }
+  );
+
   context.subscriptions.push(
-    disposable,
     addSelectedTextCommand,
+    copyLatestResponseCommand,
     vscode.window.registerWebviewViewProvider(
       "localai-vscode-plugin.view",
       localAiViewProvider,

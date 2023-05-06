@@ -9,6 +9,8 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
   private md: MarkdownIt;
   private localAI: LocalAI;
 
+  private _latestResponse?: string;
+
   constructor(private context: vscode.ExtensionContext, localAI: LocalAI) {
     this.md = new MarkdownIt();
     this.localAI = localAI;
@@ -63,6 +65,7 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
       const promptResponse = response?.data.choices[0].message.content || "";
       const htmlResponse = this.md.render(promptResponse);
 
+      this._latestResponse = promptResponse;
       this.sendMessageToWebView({
         command: "chat.parsed",
         value: htmlResponse,
@@ -77,6 +80,10 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
       );
       return;
     }
+  }
+
+  public get latestResponse() {
+    return this._latestResponse;
   }
 
   private getHtml(webview: vscode.Webview) {

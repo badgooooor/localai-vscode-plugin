@@ -17,12 +17,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "localai-vscode-plugin.helloWorld",
-        "title": "Hello World"
+        "command": "localai-vscode-plugin.addSelectedText",
+        "title": "LocalAI: Add hilighted text to chat"
       },
       {
-        "command": "localai-vscode-plugin.addSelectedText",
-        "title": "Add hilighted text to chat"
+        "command": "localai-vscode-plugin.copyLatestResponse",
+        "title": "LocalAI: Add latest response to clipboard"
       }
     ],
     "viewsContainers": {
