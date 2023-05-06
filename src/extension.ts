@@ -7,7 +7,10 @@ import { LocalAI } from "./local-ai-interface";
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  const localAI = new LocalAI("http://localhost:8080", "ggml-gpt4all-j");
+  const localAI = new LocalAI(
+    "http://localhost:8080",
+    "wizardLM-7B.ggml.q4_0.bin"
+  );
   const localAiViewProvider = new LocalAIViewProvider(context, localAI);
 
   let addSelectedTextCommand = vscode.commands.registerCommand(
