@@ -4,7 +4,6 @@
 // It cannot access the main VS Code APIs directly.
 (function () {
   const vscode = acquireVsCodeApi();
-
   window.addEventListener("message", (event) => {
     const message = event.data; // The JSON data our extension sent
 
@@ -25,6 +24,11 @@
         type: "chatLocalAI",
         value: input.value,
       });
+      const chatLogDiv = document.getElementById("chat-log");
+      const chatLogChild = document.createElement("div");
+      chatLogChild.classList.add("mb-2");
+      chatLogChild.innerHTML = `<b>You</b><br/><div class="whitespace-pre-wrap">${input.value}</div>`;
+      chatLogDiv.appendChild(chatLogChild);
 
       input.value = "";
     }

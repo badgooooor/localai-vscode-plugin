@@ -58,7 +58,10 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
 				<script src="https://cdn.tailwindcss.com"></script>
       </head>
       <body>
-        <h2>Extension view</h2>
+        <b>Chat Log</b>
+        <div id="chat-log" class="h-52 overflow-auto mb-2">
+        
+        </div>
 				<textarea
 					type="text"
 					rows="4"
@@ -66,7 +69,7 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
 					id="question-input"
 					placeholder="Ask a question..."
 				></textarea>
-        <div class="p-4 w-full flex space-x-4">
+        <div class="p-4 w-full flex space-x-6">
           <button style="background: var(--vscode-button-background)" id="chat-button" class="p-2 w-full ml-5">Ask</button>
           <button style="background: var(--vscode-button-background)" id="clear-button" class="p-2 w-full ml-3">Clear</button>
         </div>
