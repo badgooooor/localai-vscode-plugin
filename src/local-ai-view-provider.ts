@@ -1,13 +1,17 @@
 import * as vscode from "vscode";
 import * as MarkdownIt from "markdown-it";
+import { randomUUID } from "crypto";
+import { LocalAI } from "./local-ai-interface";
 
 export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
   private webView?: vscode.WebviewView;
   private message?: any;
   private md: MarkdownIt;
+  private localAI: LocalAI;
 
-  constructor(private context: vscode.ExtensionContext) {
+  constructor(private context: vscode.ExtensionContext, localAI: LocalAI) {
     this.md = new MarkdownIt();
+    this.localAI = localAI;
   }
 
   public resolveWebviewView(
@@ -26,12 +30,15 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
     webviewView.webview.onDidReceiveMessage((data) => {
       if (data.type === "chatLocalAI") {
         const htmlResult = this.md.render(data.value);
-
+        const uuid = randomUUID();
         this.sendMessageToWebView({
-          command: "userChat.parsed",
+          command: "chat.parsed",
           value: htmlResult,
+          logId: uuid,
+          role: "user",
         });
-        console.log(data.value, htmlResult);
+
+        this.sendLocalAIRequest(data.value, uuid);
       }
     });
 
@@ -46,6 +53,29 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
       this.webView?.webview.postMessage(message);
     } else {
       this.message = message;
+    }
+  }
+
+  public async sendLocalAIRequest(prompt: string, uuid: string) {
+    try {
+      const response = await this.localAI.chatCompletion(prompt, uuid);
+
+      const promptResponse = response?.data.choices[0].message.content || "";
+      const htmlResponse = this.md.render(promptResponse);
+
+      this.sendMessageToWebView({
+        command: "chat.parsed",
+        value: htmlResponse,
+        logId: uuid,
+        role: "bot",
+      });
+    } catch (error: any) {
+      console.error("err", error);
+      await vscode.window.showErrorMessage(
+        "Error sending request to LocalAI instance",
+        error
+      );
+      return;
     }
   }
 

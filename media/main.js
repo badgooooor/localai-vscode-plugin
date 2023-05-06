@@ -4,6 +4,7 @@
 // It cannot access the main VS Code APIs directly.
 (function () {
   const vscode = acquireVsCodeApi();
+
   window.addEventListener("message", (event) => {
     const message = event.data; // The JSON data our extension sent
 
@@ -13,12 +14,18 @@
         input.value = input.value + "\n```\n" + message.text + "\n```\n";
         break;
 
-      case "userChat.parsed":
+      case "chat.parsed":
         const chatLogDiv = document.getElementById("chat-log");
         const chatLogChild = document.createElement("div");
+        const role = message.role === "user" ? "You" : "Bot";
         chatLogChild.classList.add("mb-2");
-        chatLogChild.innerHTML = `<b>You</b><br/><div class="whitespace-pre-wrap">${message.value}</div>`;
+        chatLogChild.setAttribute("id", `chatlog-${message.logId}`);
+
+        chatLogChild.innerHTML = `<b>${role}</b><br/><div class="whitespace-pre-wrap">${message.value}</div>`;
         chatLogDiv.appendChild(chatLogChild);
+        break;
+
+      default:
         break;
     }
   });
