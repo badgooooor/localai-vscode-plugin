@@ -1,10 +1,14 @@
 import * as vscode from "vscode";
+import * as MarkdownIt from "markdown-it";
 
 export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
   private webView?: vscode.WebviewView;
   private message?: any;
+  private md: MarkdownIt;
 
-  constructor(private context: vscode.ExtensionContext) {}
+  constructor(private context: vscode.ExtensionContext) {
+    this.md = new MarkdownIt();
+  }
 
   public resolveWebviewView(
     webviewView: vscode.WebviewView,
@@ -21,7 +25,13 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.onDidReceiveMessage((data) => {
       if (data.type === "chatLocalAI") {
-        console.log(data.value);
+        const htmlResult = this.md.render(data.value);
+
+        this.sendMessageToWebView({
+          command: "userChat.parsed",
+          value: htmlResult,
+        });
+        console.log(data.value, htmlResult);
       }
     });
 

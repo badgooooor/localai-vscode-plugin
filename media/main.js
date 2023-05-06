@@ -12,6 +12,14 @@
         const input = document.getElementById("question-input");
         input.value = input.value + "\n```\n" + message.text + "\n```\n";
         break;
+
+      case "userChat.parsed":
+        const chatLogDiv = document.getElementById("chat-log");
+        const chatLogChild = document.createElement("div");
+        chatLogChild.classList.add("mb-2");
+        chatLogChild.innerHTML = `<b>You</b><br/><div class="whitespace-pre-wrap">${message.value}</div>`;
+        chatLogDiv.appendChild(chatLogChild);
+        break;
     }
   });
 
@@ -24,11 +32,6 @@
         type: "chatLocalAI",
         value: input.value,
       });
-      const chatLogDiv = document.getElementById("chat-log");
-      const chatLogChild = document.createElement("div");
-      chatLogChild.classList.add("mb-2");
-      chatLogChild.innerHTML = `<b>You</b><br/><div class="whitespace-pre-wrap">${input.value}</div>`;
-      chatLogDiv.appendChild(chatLogChild);
 
       input.value = "";
     }
