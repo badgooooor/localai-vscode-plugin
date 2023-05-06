@@ -1,0 +1,46 @@
+import axios, { AxiosResponse } from "axios";
+
+export class LocalAI {
+  private uri: string;
+  private model: string;
+
+  private _processingId: string[] = [];
+
+  constructor(uri: string, model: string) {
+    this.uri = uri;
+    this.model = model;
+  }
+
+  public async chatCompletion(input: string, id: string, temperature = 0.5) {
+    this._processingId.push(id);
+
+    try {
+      const response = await axios.post(`${this.uri}/v1/chat/completions`, {
+        model: this.model,
+        message: [{ role: "user" }, { content: input }],
+        temperature,
+      });
+      this.removeFinishedProcessingId(id);
+
+      return response;
+    } catch (err) {
+      this.removeFinishedProcessingId(id);
+      return undefined;
+    }
+  }
+
+  private removeFinishedProcessingId(id: string) {
+    const index = this._processingId.indexOf(id, 0);
+    if (index > -1) {
+      this._processingId.splice(index, 1);
+    }
+  }
+
+  public isIdProcessing(id: string) {
+    return this._processingId.includes(id);
+  }
+
+  public get isProcessing() {
+    return this._processingId.length > 0;
+  }
+}
