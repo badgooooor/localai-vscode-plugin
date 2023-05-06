@@ -17,12 +17,31 @@
       case "chat.parsed":
         const chatLogDiv = document.getElementById("chat-log");
         const chatLogChild = document.createElement("div");
-        const role = message.role === "user" ? "You" : "Bot";
-        chatLogChild.classList.add("mb-2");
-        chatLogChild.setAttribute("id", `chatlog-${message.logId}`);
 
-        chatLogChild.innerHTML = `<b>${role}</b><br/><div class="whitespace-pre-wrap">${message.value}</div>`;
-        chatLogDiv.appendChild(chatLogChild);
+        const role = message.role === "user" ? "You" : "Bot";
+
+        if (role === "You") {
+          chatLogChild.classList.add("mb-2");
+          chatLogChild.setAttribute("id", `chatlog-${message.logId}`);
+
+          chatLogChild.innerHTML = `<b>${role}</b><br/><div class="whitespace-pre-wrap">${message.value}</div>`;
+          chatLogDiv.appendChild(chatLogChild);
+
+          const loadingChild = document.createElement("div");
+          loadingChild.innerHTML = "<b>Bot</b><br/><p>...</p>";
+
+          chatLogDiv.appendChild(loadingChild);
+        } else {
+          if (chatLogDiv.lastChild) {
+            chatLogDiv.removeChild(chatLogDiv.lastChild);
+          }
+          chatLogChild.classList.add("mb-2");
+          chatLogChild.setAttribute("id", `chatlog-${message.logId}`);
+
+          chatLogChild.innerHTML = `<b>${role}</b><br/><div class="whitespace-pre-wrap">${message.value}</div>`;
+          chatLogDiv.appendChild(chatLogChild);
+        }
+
         break;
 
       default:
