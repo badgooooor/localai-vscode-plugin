@@ -17,7 +17,7 @@ export class LocalAI {
     try {
       const response = await axios.post(`${this.uri}/v1/chat/completions`, {
         model: this.model,
-        message: [{ role: "user" }, { content: input }],
+        messages: [{ role: "user" }, { content: input }],
         temperature,
       });
       this.removeFinishedProcessingId(id);
