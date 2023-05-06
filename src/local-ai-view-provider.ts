@@ -59,13 +59,29 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
   }
 
   public async sendLocalAIRequest(prompt: string, uuid: string) {
+    let codeResponse: string | null = null;
+
     try {
       const response = await this.localAI.chatCompletion(prompt, uuid);
 
       const promptResponse = response?.data.choices[0].message.content || "";
       const htmlResponse = this.md.render(promptResponse);
 
-      this._latestResponse = promptResponse;
+      const codeResponseArray = promptResponse.match(
+        /^```([\s\S]*?)\n([\s\S]*?)```$/gm
+      );
+      if (codeResponseArray !== null) {
+        codeResponse = codeResponseArray[0]
+          .split("\n")
+          .slice(1, codeResponseArray[0].length - 2)
+          .join("\n");
+        vscode.env.clipboard.writeText(codeResponse ?? "");
+        vscode.window.showInformationMessage(
+          "Copied detected codeblock to clipboard."
+        );
+      }
+
+      this._latestResponse = codeResponse ? codeResponse : promptResponse;
       this.sendMessageToWebView({
         command: "chat.parsed",
         value: htmlResponse,
