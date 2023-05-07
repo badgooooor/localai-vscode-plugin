@@ -62,45 +62,52 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
     let codeResponse: string | null = null;
 
     try {
-			let promptResponse = '';
-			const onStreamUpdateToWebview = (data: string) => {
-				promptResponse = `${promptResponse}${data}`;
+      let promptResponse = "";
+      const onStreamUpdateToWebview = (data: string) => {
+        promptResponse = `${promptResponse}${data}`;
         const htmlResponse = this.md.render(promptResponse);
-				this.sendMessageToWebView({
-					command: 'chat.parsed',
-					value: htmlResponse,
-					logId: uuid,
-					role: 'bot',
-				});
-			};
-			const onStreamFinishedToWebview = () => {
-				this.sendMessageToWebView({
-					command: 'chat.complete',
-				});
+        this.sendMessageToWebView({
+          command: "chat.parsed",
+          value: htmlResponse,
+          logId: uuid,
+          role: "bot",
+        });
+      };
+      const onStreamFinishedToWebview = () => {
+        this.sendMessageToWebView({
+          command: "chat.complete",
+        });
 
-				const codeResponseArray = promptResponse.match(
-					/^```([\s\S]*?)\n([\s\S]*?)```$/gm
-				);
-				if (codeResponseArray !== null) {
-					codeResponse = codeResponseArray[0]
-						.split("\n")
-						.slice(1, codeResponseArray[0].length - 2)
-						.join("\n");
-					vscode.env.clipboard.writeText(codeResponse ?? "");
-					vscode.window.showInformationMessage(
-						"Copied detected codeblock to clipboard."
-					);
-				}
-	
-				this._latestResponse = codeResponse ? codeResponse : promptResponse;
-			};
-			this.localAI.chatCompletion(
-				prompt,
-				uuid,
-				0.5,
-				onStreamUpdateToWebview,
-				onStreamFinishedToWebview
-			);
+        console.log("prompt", promptResponse);
+
+        const codeResponseArray = promptResponse.match(
+          /^```([\s\S]*?)\n([\s\S]*?)```$/gm
+        );
+        console.log("raw", codeResponseArray);
+        if (codeResponseArray !== null) {
+          codeResponse = codeResponseArray[0]
+            .split("\n")
+            .slice(1, codeResponseArray[0].length - 2)
+            .join("\n");
+
+          codeResponse = codeResponse.slice(0, codeResponse.length - 4);
+          console.log("parsed", codeResponse);
+
+          vscode.env.clipboard.writeText(codeResponse ?? "");
+          vscode.window.showInformationMessage(
+            "Copied detected codeblock to clipboard."
+          );
+        }
+
+        this._latestResponse = codeResponse ? codeResponse : promptResponse;
+      };
+      this.localAI.chatCompletion(
+        prompt,
+        uuid,
+        0.5,
+        onStreamUpdateToWebview,
+        onStreamFinishedToWebview
+      );
     } catch (error: any) {
       console.error("err", error);
       await vscode.window.showErrorMessage(
