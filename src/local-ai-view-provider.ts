@@ -78,12 +78,9 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
           command: "chat.complete",
         });
 
-        console.log("prompt", promptResponse);
-
         const codeResponseArray = promptResponse.match(
           /^```([\s\S]*?)\n([\s\S]*?)```$/gm
         );
-        console.log("raw", codeResponseArray);
         if (codeResponseArray !== null) {
           codeResponse = codeResponseArray[0]
             .split("\n")
@@ -91,7 +88,6 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
             .join("\n");
 
           codeResponse = codeResponse.slice(0, codeResponse.length - 4);
-          console.log("parsed", codeResponse);
 
           vscode.env.clipboard.writeText(codeResponse ?? "");
           vscode.window.showInformationMessage(

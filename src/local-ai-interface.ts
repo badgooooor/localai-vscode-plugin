@@ -35,7 +35,6 @@ export class LocalAI {
       const stream = response.data;
       stream.on("data", (data: any) => {
         data = data.toString();
-        console.log("data", data);
         const jsonString = data.substring(
           data.indexOf("{"),
           data.lastIndexOf("}") + 1
