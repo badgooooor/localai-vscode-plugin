@@ -20,6 +20,10 @@
 
         const role = message.role === "user" ? "You" : "Bot";
 
+        if (!message.value) {
+          break;
+        }
+
         if (role === "You") {
           chatLogChild.classList.add("mb-2");
           chatLogChild.setAttribute("id", `chatlog-${message.logId}`);
@@ -42,6 +46,10 @@
           chatLogDiv.appendChild(chatLogChild);
         }
 
+        break;
+      
+      case "chat.complete":
+        currentChat = '';
         break;
 
       default:
