@@ -102,13 +102,13 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
 		return this._latestResponse;
 	}
 
-	private getHtml(webview: vscode.Webview) {
-		const scriptUri = webview.asWebviewUri(
-			vscode.Uri.joinPath(this.context.extensionUri, 'media', 'main.js')
-		);
-		const stylesMainUri = webview.asWebviewUri(
-			vscode.Uri.joinPath(this.context.extensionUri, 'media', 'main.css')
-		);
+  private getHtml(webview: vscode.Webview) {
+    const scriptUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.context.extensionUri, "media", "main.js")
+    );
+    const stylesMainUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.context.extensionUri, "media", "main.css")
+    );
 
 		return `
       <!DOCTYPE html>
