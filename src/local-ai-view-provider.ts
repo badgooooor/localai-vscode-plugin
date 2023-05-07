@@ -65,9 +65,10 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
 			let promptResponse = '';
 			const onStreamUpdateToWebview = (data: string) => {
 				promptResponse = `${promptResponse}${data}`;
+        const htmlResponse = this.md.render(promptResponse);
 				this.sendMessageToWebView({
 					command: 'chat.parsed',
-					value: data,
+					value: htmlResponse,
 					logId: uuid,
 					role: 'bot',
 				});
@@ -134,7 +135,8 @@ export default class LocalAIViewProvider implements vscode.WebviewViewProvider {
     </head>
     <body>
     <div class="flex flex-col h-screen">
-      <b>Chat Log</b>
+      <h3>Chat Log</h3>
+      <hr class="mb-2">
       <div id="chat-log" class="h-full overflow-auto mb-2">
       
       </div>
