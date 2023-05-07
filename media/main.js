@@ -28,7 +28,7 @@
           chatLogDiv.appendChild(chatLogChild);
 
           const loadingChild = document.createElement("div");
-          loadingChild.innerHTML = "<b>Bot</b><br/><p>...</p>";
+          loadingChild.innerHTML = `<b>Bot</b><br/><p class="loading"></p>`;
 
           chatLogDiv.appendChild(loadingChild);
         } else {
