@@ -30,7 +30,7 @@
         {
           "id": "localai-vscode-plugin",
           "title": "LocalAI",
-          "icon": "images/icon.png"
+          "icon": "images/bot.png"
         }
       ]
     },
