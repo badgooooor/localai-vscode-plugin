@@ -11,39 +11,54 @@ export class LocalAI {
     this.model = model;
   }
 
-	public async chatCompletion(input: string, id: string, temperature = 0.5, onUpdate?: (data: string) => void, onFinished?: () => void) {
-		this._processingId.push(id);
+  public async chatCompletion(
+    input: string,
+    id: string,
+    temperature = 0.5,
+    onUpdate?: (data: string) => void,
+    onFinished?: () => void
+  ) {
+    this._processingId.push(id);
 
-		try {
-			const response = await axios.post(
-				`${this.uri}/v1/chat/completions`,
-				{
-					model: this.model,
-					messages: [{ role: 'user', content: input }],
-					temperature,
-					stream: true,
-				},
-				{ responseType: 'stream' }
-			);
+    try {
+      const response = await axios.post(
+        `${this.uri}/v1/chat/completions`,
+        {
+          model: this.model,
+          messages: [{ role: "user", content: input }],
+          temperature,
+          stream: true,
+        },
+        { responseType: "stream" }
+      );
 
-			const stream = response.data;
-			stream.on('data', (data: any) => {
-				data = data.toString();
-        const jsonString = data.substring(data.indexOf('{'), data.lastIndexOf('}') + 1);
+      const stream = response.data;
+      stream.on("data", (data: any) => {
+        data = data.toString();
+        const jsonString = data.substring(
+          data.indexOf("{"),
+          data.lastIndexOf("}") + 1
+        );
         const jsonObject = JSON.parse(jsonString);
 
         const content = jsonObject.choices[0].delta.content;
         onUpdate?.(content);
-			});
+      });
 
-      stream.on('end', onFinished);
+      stream.on("end", () => {
+        onFinished?.();
+      });
 
-			this.removeFinishedProcessingId(id);
-		} catch (err) {
-			this.removeFinishedProcessingId(id);
-			return undefined;
-		}
-	}
+      stream.on("close", () => {
+        onFinished?.();
+      });
+
+      this.removeFinishedProcessingId(id);
+    } catch (err) {
+      this.removeFinishedProcessingId(id);
+      return undefined;
+    }
+  }
 
   private removeFinishedProcessingId(id: string) {
     const index = this._processingId.indexOf(id, 0);
