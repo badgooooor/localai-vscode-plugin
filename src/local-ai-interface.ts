@@ -35,6 +35,7 @@ export class LocalAI {
       const stream = response.data;
       stream.on("data", (data: any) => {
         data = data.toString();
+        console.log("data", data);
         const jsonString = data.substring(
           data.indexOf("{"),
           data.lastIndexOf("}") + 1
@@ -42,7 +43,9 @@ export class LocalAI {
         const jsonObject = JSON.parse(jsonString);
 
         const content = jsonObject.choices[0].delta.content;
-        onUpdate?.(content);
+        if (content) {
+          onUpdate?.(content);
+        }
       });
 
       stream.on("end", () => {
